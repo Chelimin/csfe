@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    <title>CatchSense</title>
+    <link rel="icon" href="images/csfavicon.ico">
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/index.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- GA  -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-85405028-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <nav class="white" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">CatchSense (Beta)</a>
+      </div>
+    </nav>
+    <div id="index-banner" class="parallax-container">
+      <div class="section no-pad-bot">
+        <div class="container">
+          <br><br>
+          <h1 class="header center white-text text-lighten-2">PropGenius</h1>
+        </div>
+      </div>
+      <div class="parallax"><img src="images/sgresidential.jpg" alt="background"></div>
+    </div>
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <h5 class="header col s12 teal-text">Enter your property details to see the latest trends affecting its value :</h5>
+        </div>
+      </div>
+      <div class="row">
+        <form class="col s12" method="post" id="target">
+          <div class="row">
+            <div class="input-field col s12">
+              <input autocomplete="off" placeholder="One Amber" type="text" id="projName" class="autocomplete" required="" aria-required="true">
+              <label for="autocomplete-input">Project Name</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s6">
+              <select id="propType">
+                <option value="" disabled selected></option>
+                <option value="Condominium">Condominium</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Executive Condominium">Executive Condominium</option>
+              </select>
+              <label>Property Type</label>
+            </div>
+            <div class="input-field col s6">
+              <input placeholder="13" id="floor" type="text" class="validate" required="" aria-required="true">
+              <label for="first_name">Floor</label>
+            </div>
+            <div class="input-field col s3">
+              <select id="year">
+                <option value="" disabled selected>Year</option>
+                <option value="2017">2017</option>
+                <!-- <option value="2017">2017</option> -->
+              </select>
+              <label>Query periods</label>
+            </div>
+            <div class="input-field col s3">
+              <select id="quarter">
+                <option value="" disabled selected>Quarter</option>
+                <option value="1">Q1- 4</option>
+                <!-- <option value="2">Q2</option>
+                <option value="3">Q3</option> -->
+                <!-- <option value="4">Q4</option> -->
+              </select>
+            </div>
+            <div class="input-field col s6">
+              <input placeholder="1000" id="propSize" type="text" class="validate" required="" aria-required="true">
+              <label for="first_name">Unit Size (sqft)</label>
+            </div>
+          </div>
+        </div>
+        <div class="row right-align">
+        <button class="waves-effect waves-light btn" id = "clear" style="margin-right:10px">Clear</a></button>
+      <button class="waves-effect waves-light btn" type = "submit">Submit</a></button>
+    </div>
+  </form>
+      <div class="progress center-align hidden" id="loader">
+          <div class="indeterminate"></div>
+      </div>
+  <br><br>
+  <div class="results">
+    <h5 id="rProjName"></h5>    
+    <h6 id="rPrice"></h6>
+  </div>
+  <div class="card">
+    <div class="card-image waves-effect waves-block waves-light">
+      <div id="unit" style="width: 100%; height: 800px; margin:auto; position:relative" class='hidden'></div>
+      <div class="card-panel enter-aligned hidden" id='card'>
+        <table class='striped responsive-table hidden center' id='table'>
+          <thead>
+            <tr class="teal text-lighten-5 white-text">
+              <th data-field='quarter' id='q'></th>
+              <th data-field='price' id='fup'></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id= 'q1'></td>
+              <td id='q1price'></td>
+            </tr>
+            <tr>
+              <td id='q2'></td>
+              <td id='q2price'></td>
+            </tr>
+            <tr>
+              <td id='q3'></td>
+              <td id='q3price'></td>
+            </tr>
+            <tr>
+              <td id='q4'></td>
+              <td id='q4price'></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="card-content hidden" id='card2'>
+      <span class="card-title activator grey-text text-darken-4"><i class="material-icons right">more_vert</i></span>
+      <p><a href="#">More information</a></p>
+    </div>
+    <div class="card-reveal">
+    <span class="card-title grey-text text-darken-4">PropGenius Accuracy:<i class="material-icons right">close</i></span>
+    <br><br> <br><br>
+    <img style="display:block;margin:auto" src="images/mape.png">
+    <br><br><br><br>
+    <span class="card-title grey-text text-darken-4">You might also be interested in:</span>
+    <br><br><br><br>
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card small">
+            <div class="card-image">
+               <img src="http://goo.gl/PFsf9I">
+              <span class="card-title">Listing</span>
+            </div>
+            <div class="card-content">
+              <p>Some information on Listing</p>
+            </div>
+            <div class="card-action">
+              <a href="#">Link to listing</a>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6">
+        <div class="card horizontal small">
+          <div class="card-image">
+            <img src="http://www.clipartbest.com/cliparts/4ib/Kz7/4ibKz78KT.gif">
+          </div>
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am this project's FEATURED AGENT, get in touch with me for more information.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">Link to contact</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      
+  
+    </div>
+  </div>
+</div>
+</div>
+<br><br>
+
+<footer class="page-footer teal">
+<div class="container">
+  <div class="row">
+    <div class="col l9 s12">
+      <h5 class="white-text">About</h5>
+      <p class="grey-text text-lighten-4">Powered by Deep Learning, PropGenius is our proprietary model which analyzes Macroeconomic data, past transactions, and property features to forecast Real Estate trends so that you can make better informed decisions.</p>
+    </div>
+    <div class="col l3 s12">
+          <h5 class="white-text">More</h5>
+          <ul>
+            <li><a class="white-text right-align" href="api.html">APIs</a></li>
+            <li><a class="white-text" href="blog.html">Blog</a></li>
+            <li><a class="white-text" href="team.html">Team</a></li>
+            <li><a class="white-text" href="tech.html">Technology</a></li>
+          </ul>
+        </div>
+  </div>
+</div>
+
+<div class="footer-copyright">
+  <div class="container">
+    Get in touch: <a class="brown-text text-lighten-3" href="mailto:hello@catchsense.com">hello@catchsense.com</a>
+  </div>
+</div>
+</footer>
+<!--  Scripts-->
+<script src="js/materialize.js"></script>
+<script src="js/init.js"></script>
+<script src="js/results.js"></script>
+</body>
+</html>
